@@ -1,0 +1,60 @@
+#include <Adafruit_NeoPixel.h>
+#include <stdlib.h>
+
+#define PIN 6
+#define PIXEL_COUNT 117
+#define ADJACENT 1 // How many pixels in the same color
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXEL_COUNT, PIN, NEO_GRB + NEO_KHZ800);
+void setup() {
+  strip.begin();
+  strip.show(); // Initialize all pixels to 'off'
+  srand(23);
+}
+
+void loop() {
+  int steps = (strip.numPixels()+ADJACENT-1) / ADJACENT;
+    for (int i = 0; i < (steps-1)*ADJACENT; i += ADJACENT) {
+      uint32_t c = strip.getPixelColor(i+ADJACENT);
+      for (int x = i+0; x < i+ADJACENT; x++) {
+        strip.setPixelColor(x, c);
+      }
+    }
+    uint32_t c = Wheel(rand() & 255);
+    for (int i = (steps-1)*ADJACENT; i < strip.numPixels(); i++) {
+      strip.setPixelColor(i, c);
+    }
+    strip.show();
+    delay(200);
+}
+
+uint32_t Wheel(byte WheelPos) {
+  WheelPos = 255 - WheelPos;
+  if(WheelPos < 85) {
+    return strip.Color(255 - WheelPos * 3, 0, WheelPos * 3);
+  }
+  if(WheelPos < 170) {
+    WheelPos -= 85;
+    return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
+  }
+  WheelPos -= 170;
+  return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
